@@ -1,11 +1,5 @@
-.. image:: https://travis-ci.org/ImmobilienScout24/pybuilder_aws_plugin.svg?branch=master
-    :target: https://travis-ci.org/ImmobilienScout24/pybuilder_aws_plugin
-
-.. image:: https://coveralls.io/repos/ImmobilienScout24/pybuilder_aws_plugin/badge.svg?branch=master&service=github
-    :target: https://coveralls.io/github/ImmobilienScout24/pybuilder_aws_plugin?branch=master
-
-.. image:: https://badge.fury.io/py/pybuilder_aws_plugin.svg
-    :target: https://badge.fury.io/py/pybuilder_aws_plugin
+.. image:: https://travis-ci.org/OberbaumConcept/pybuilder_emr_plugin.svg?branch=master
+    :target: https://travis-ci.org/OberbaumConcept/pybuilder_emr_plugin
 
 
 ====================
