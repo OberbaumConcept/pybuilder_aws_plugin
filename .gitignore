@@ -64,3 +64,4 @@ venv
 # VirtualEnv
 bin/
 include/
+/.venv/
