@@ -29,6 +29,8 @@ def set_properties(project):
     project.build_depends_on("mock")
     project.build_depends_on("moto")
     project.set_property("coverage_break_build", False)
+    project.set_property("run_unit_tests_propagate_stdout", True)
+    project.set_property("run_unit_tests_propagate_stderr", True)
     project.set_property("distutils_classifiers", [
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",

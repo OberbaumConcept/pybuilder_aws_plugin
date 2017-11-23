@@ -81,6 +81,7 @@ def emr_package(project, logger):
     prepare_dependencies_dir(logger, project, emr_dependencies_dir, excludes=excludes)
     logger.info("Going to assemble the emr-zip.")
     path_to_zipfile = get_path_to_zipfile(project)
+    print("assemble zip: {0}".format(path_to_zipfile))
     archive = zipfile.ZipFile(path_to_zipfile, "w")
     if os.path.isdir(emr_dependencies_dir):
         zip_recursive(archive, emr_dependencies_dir)

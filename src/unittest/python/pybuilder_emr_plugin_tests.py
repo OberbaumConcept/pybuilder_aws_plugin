@@ -59,7 +59,8 @@ class PackageTest(TestCase):
         self.project.set_property("dir_source_main_python", "src/main/python")
         self.project.set_property("dir_source_main_scripts", "src/main/scripts")
         self.project.set_property("emr.main-file", "main.py")
-
+        self.project.set_property("run_unit_tests_propagate_stdout", True)
+        self.project.set_property("run_unit_tests_propagate_stderr", True)
         self.dir_target = os.path.join(self.testdir, "target")
         self.zipfile_name = os.path.join(self.dir_target, "palp.zip")
 
