@@ -2,7 +2,6 @@ sudo: false
 language: python
 python:
   - "3.6"
-  - "pypy3"
 # Travis will clone only 50 commits by default. This project however uses the
 # number of commits to determine the version number. Hence we need ALL the
 # commits. This will make the lone unshallow.
