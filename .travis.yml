@@ -1,5 +1,6 @@
 sudo: false
 language: python
+cache: pip
 python:
   - "3.6"
 # Travis will clone only 50 commits by default. This project however uses the
