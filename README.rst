@@ -12,9 +12,10 @@ following use cases are supported:
 
 * Packaging Python code for EMR_ and uploading the result to S3_.
 
-This project is based heavily on pybuilder_aws_plugin!
+This project is based heavily on pybuilder_aws_plugin_ by Immobilienscout.
 
 .. _S3: http://aws.amazon.com/documentation/s3/
+.. _pybuilder_aws_plugin: https://github.com/ImmobilienScout24/pybuilder_aws_plugin
 
 Usage
 =====================
