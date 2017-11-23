@@ -1,7 +1,4 @@
-env:
-  global:
-    - TMPDIR=~/tmp
-sudo: false
+sudo: true
 language: python
 python:
   - "3.6"
