@@ -1,6 +1,6 @@
 .. image:: https://travis-ci.org/OberbaumConcept/pybuilder_emr_plugin.svg?branch=master
     :target: https://travis-ci.org/OberbaumConcept/pybuilder_emr_plugin
-.. image:: https://coveralls.io/repos/OberbaumConcept/pybuilder_emr_plugin/badge.svg?branch=master&service=github
+.. image:: https://coveralls.io/repos/github/OberbaumConcept/pybuilder_emr_plugin/badge.svg?branch=master
     :target: https://coveralls.io/github/OberbaumConcept/pybuilder_emr_plugin?branch=master
 
 ====================
