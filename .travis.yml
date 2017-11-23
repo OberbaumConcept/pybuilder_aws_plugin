@@ -1,6 +1,6 @@
 env:
   global:
-    - TMPDIR=/tmp
+    - TMPDIR=~/tmp
 sudo: false
 language: python
 python:
