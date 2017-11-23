@@ -145,7 +145,7 @@ class UploadToS3Test(TestsWithS3):
     def test_handle_failure_if_no_such_bucket(self):
         pass
 
-
+@unittest.skip
 class ReleaseTest(TestsWithS3):
     def test_release_successful(self):
         emr_upload_to_s3(self.project, mock.MagicMock(Logger))
