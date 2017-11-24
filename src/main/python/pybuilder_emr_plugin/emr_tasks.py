@@ -83,6 +83,7 @@ def emr_package(project, logger):
     path_to_zipfile = get_path_to_zipfile(project)
     print("assemble zip: {0}".format(path_to_zipfile))
     archive = zipfile.ZipFile(path_to_zipfile, "w")
+    print("archive opened")
     if os.path.isdir(emr_dependencies_dir):
         zip_recursive(archive, emr_dependencies_dir)
     sources = project.expand_path("$dir_source_main_python")
