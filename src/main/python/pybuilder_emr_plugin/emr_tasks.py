@@ -81,8 +81,8 @@ def emr_package(project, logger):
     logger.info("Going to assemble the emr-zip.")
     path_to_zipfile = get_path_to_zipfile(project)
     dir_target = os.path.dirname(os.path.abspath(path_to_zipfile))
-    if not os.path.exists(dir_target):
-        os.makedirs(dir_target)
+    # if not os.path.exists(dir_target):
+    #     os.makedirs(dir_target)
     print("assemble zip: {0}".format(path_to_zipfile))
     archive = zipfile.ZipFile(path_to_zipfile, "w")
     print("archive opened")
