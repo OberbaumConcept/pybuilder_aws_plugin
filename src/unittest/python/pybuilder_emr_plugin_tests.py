@@ -63,12 +63,16 @@ class PackageTest(TestCase):
         self.project.set_property("run_unit_tests_propagate_stderr", True)
         self.dir_target = os.path.join(self.testdir, "target")
         self.zipfile_name = os.path.join(self.dir_target, "palp.zip")
+        print("setUp done:")
+        list_dir(self.tempdir)
 
     def tearDown(self):
         shutil.rmtree(self.tempdir)
 
     @mock.patch("pybuilder_emr_plugin.emr_tasks.prepare_dependencies_dir")
     def test_emr_package_assembles_zipfile_correctly(self, prepare_dependencies_dir_mock):
+        print("before package")
+        list_dir(self.tempdir)
         emr_package(self.project, mock.MagicMock(Logger))
         zf = zipfile.ZipFile(self.zipfile_name)
         expected = sorted(["test_dependency_module.py",
@@ -79,6 +83,15 @@ class PackageTest(TestCase):
                            "VERSION"])
         self.assertEqual(sorted(zf.namelist()), expected)
 
+def list_dir(dir):
+    for dirname, dirnames, filenames in os.walk(dir):
+        # print path to all subdirectories first.
+        for subdirname in dirnames:
+            print(os.path.join(dirname, subdirname))
+
+        # print path to all filenames.
+        for filename in filenames:
+            print(os.path.join(dirname, filename))
 
 class TestsWithS3(TestCase):
     def setUp(self):
