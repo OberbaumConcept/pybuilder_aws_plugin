@@ -55,8 +55,7 @@ def prepare_dependencies_dir(logger, project, target_directory, excludes=None):
 
 
 def get_path_to_zipfile(project):
-    return os.path.join(
-        project.expand_path("$dir_target"), "{0}.zip".format(project.name))
+    return os.path.join(project.expand_path("$dir_target"), "{0}.zip".format(project.name))
 
 
 def write_version(project, archive):
@@ -81,6 +80,9 @@ def emr_package(project, logger):
     prepare_dependencies_dir(logger, project, emr_dependencies_dir, excludes=excludes)
     logger.info("Going to assemble the emr-zip.")
     path_to_zipfile = get_path_to_zipfile(project)
+    dir_target = os.path.dirname(os.path.abspath(path_to_zipfile))
+    if not os.path.exists(dir_target):
+        os.makedirs(dir_target)
     print("assemble zip: {0}".format(path_to_zipfile))
     archive = zipfile.ZipFile(path_to_zipfile, "w")
     print("archive opened")
