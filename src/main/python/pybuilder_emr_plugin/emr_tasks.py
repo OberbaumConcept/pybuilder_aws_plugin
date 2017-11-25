@@ -5,23 +5,29 @@ import ast
 import os
 import subprocess
 import zipfile
+from  distutils import dir_util
 
 from pybuilder.core import depends, task
 from pybuilder.plugins.python.distutils_plugin import build_install_dependencies_string
 
 from .helpers import (upload_helper,
-                      copy_helper,
-                      teamcity_helper,
                       check_acl_parameter_validity,
                       )
+
+PROPERTY_S3_BUCKET_NAME = "emr.s3.bucket-name"
+PROPERTY_S3_BUCKET_PREFIX = "emr.s3.bucket-prefix"
+PROPERTY_S3_FILE_ACCESS_CONTROL = "emr.s3.file-access-control"
+PROPERTY_S3_RELEASE_PREFIX = "emr.s3.release-prefix"
+RELEASE_PREFIX_DEFAULT = "LATEST"
+_EMR_PACKAGE_DIR = "emr-package"
 
 
 def zip_recursive(archive, directory, folder="", excludes=[]):
     """Zip directories recursively"""
     for item in os.listdir(directory):
+        if item in excludes:
+            continue
         if os.path.isfile(os.path.join(directory, item)):
-            if item in excludes:
-                continue
             archive.write(os.path.join(directory, item), os.path.join(folder, item), zipfile.ZIP_DEFLATED)
         elif os.path.isdir(os.path.join(directory, item)):
             zip_recursive(archive, os.path.join(directory, item), folder=os.path.join(folder, item), excludes=excludes)
@@ -54,13 +60,17 @@ def prepare_dependencies_dir(logger, project, target_directory, excludes=None):
             raise Exception(msg)
 
 
+def get_emr_package_dir(project):
+    return os.path.join(project.expand_path("$dir_target"), _EMR_PACKAGE_DIR)
+
+
 def get_path_to_zipfile(project):
-    return os.path.join(project.expand_path("$dir_target"), "{0}.zip".format(project.name))
+    return os.path.join(get_emr_package_dir(project), "{0}.zip".format(project.name))
 
 
 def write_version(project, archive):
     """Get the current version and write it to a version file"""
-    filename = os.path.join(project.expand_path("$dir_target"), "VERSION")
+    filename = os.path.join(get_emr_package_dir(project), "VERSION")
     with open(filename, "w") as version_file:
         version_file.write(project.version)
     archive.write(filename, "VERSION")
@@ -73,57 +83,64 @@ def write_version(project, archive):
          "publish",
          "package")
 def emr_package(project, logger):
-    dir_target = project.expand_path("$dir_target")
-    emr_dependencies_dir = os.path.join(dir_target, "emr_dependencies")
+    emr_package_dir = get_emr_package_dir(project)
+    emr_dependencies_dir = os.path.join(emr_package_dir, "dependencies")
     excludes = ["boto", "boto3"]
     logger.info("Going to prepare dependencies.")
     prepare_dependencies_dir(logger, project, emr_dependencies_dir, excludes=excludes)
-    logger.info("Going to assemble the emr-zip.")
+    logger.info("Going to assemble the emr-package-zip.")
     path_to_zipfile = get_path_to_zipfile(project)
-    dir_target = os.path.dirname(os.path.abspath(path_to_zipfile))
-    # if not os.path.exists(dir_target):
-    #     os.makedirs(dir_target)
-    print("assemble zip: {0}".format(path_to_zipfile))
+    logger.debug("Going to assemble the emr-package-zip: {}".format(path_to_zipfile))
     archive = zipfile.ZipFile(path_to_zipfile, "w")
-    print("archive opened")
     if os.path.isdir(emr_dependencies_dir):
         zip_recursive(archive, emr_dependencies_dir)
     sources = project.expand_path("$dir_source_main_python")
-    excludes = [project.get_property("emr.main-file")]
+    excludes = ["spark-warehouse"]
     zip_recursive(archive, sources, excludes=excludes)
-    scripts = project.expand_path("$dir_source_main_scripts")
-    if os.path.exists(scripts) and os.path.isdir(scripts):
-        zip_recursive(archive, scripts, excludes=excludes)
     write_version(project, archive)
     archive.close()
-    logger.info("Lambda-zip is available at: {0}".format(path_to_zipfile))
+    logger.info("emr-package-zip is available at: {0}".format(path_to_zipfile))
+    scripts = project.expand_path("$dir_source_main_scripts")
+    if os.path.exists(scripts) and os.path.isdir(scripts):
+        logger.info("copying scripts to: {0}".format(emr_package_dir))
+        dir_util.copy_tree(scripts, emr_package_dir)
 
 
 @task("emr_upload_to_s3", description="Upload a packaged lambda-zip to S3")
 @depends("emr_package")
 def emr_upload_to_s3(project, logger):
-    path_to_zipfile = get_path_to_zipfile(project)
-    logger.info("Found lambda-zip at: {0}".format(path_to_zipfile))
-    with open(path_to_zipfile, "rb") as fp:
-        data = fp.read()
-    bucket_prefix = project.get_property("bucket_prefix")
-    bucket_name = project.get_mandatory_property("bucket_name")
-    keyname_version = "{0}v{1}/{2}.zip".format(bucket_prefix, project.version, project.name)
-    acl = project.get_property("lambda_file_access_control")
-    check_acl_parameter_validity("lambda_file_access_control", acl)
-    upload_helper(logger, bucket_name, keyname_version, data, acl)
-    tc_param = project.get_property("teamcity_parameter")
-    if project.get_property("teamcity_output") and tc_param:
-        teamcity_helper(tc_param, keyname_version)
+    emr_package_dir = get_emr_package_dir(project)
+    bucket_prefix = project.get_property(PROPERTY_S3_BUCKET_PREFIX)
+    bucket_name = project.get_mandatory_property(PROPERTY_S3_BUCKET_NAME)
+    acl = project.get_property(PROPERTY_S3_FILE_ACCESS_CONTROL)
+    check_acl_parameter_validity(PROPERTY_S3_FILE_ACCESS_CONTROL, acl)
+
+    for item in os.listdir(get_emr_package_dir(project)):
+        filepath = os.path.join(emr_package_dir, item)
+        if os.path.isfile(filepath):
+            logger.debug("Found file to upload: {0}".format(item))
+            with open(filepath, "rb") as fp:
+                data = fp.read()
+            keyname_version = "{0}v{1}/{2}".format(bucket_prefix, project.version, item)
+            upload_helper(logger, bucket_name, keyname_version, data, acl)
+            logger.info("uploaded: {0} to {1}".format(item, keyname_version))
 
 
 @task("emr_release", description="Copy emr zip file from versioned path to latest path in S3")
 def emr_release(project, logger):
-    bucket_prefix = project.get_property("bucket_prefix")
-    bucket_name = project.get_mandatory_property("bucket_name")
-    acl = project.get_property("emr.file_access_control")
-    check_acl_parameter_validity("emr.file_access_control", acl)
+    emr_package_dir = get_emr_package_dir(project)
+    bucket_prefix = project.get_property(PROPERTY_S3_BUCKET_PREFIX)
+    bucket_name = project.get_mandatory_property(PROPERTY_S3_BUCKET_NAME)
+    release_prefix = project.get_property(PROPERTY_S3_RELEASE_PREFIX, RELEASE_PREFIX_DEFAULT)
+    acl = project.get_property(PROPERTY_S3_FILE_ACCESS_CONTROL)
+    check_acl_parameter_validity(PROPERTY_S3_FILE_ACCESS_CONTROL, acl)
 
-    source_key = "{0}v{1}/{2}.zip".format(bucket_prefix, project.version, project.name)
-    destination_key = "{0}latest/{1}.zip".format(bucket_prefix, project.name)
-    copy_helper(logger, bucket_name, source_key, destination_key, acl)
+    for item in os.listdir(get_emr_package_dir(project)):
+        filepath = os.path.join(emr_package_dir, item)
+        if os.path.isfile(filepath):
+            logger.debug("Found file to upload: {0}".format(item))
+            with open(filepath, "rb") as fp:
+                data = fp.read()
+            keyname_version = "{0}{1}/{2}".format(bucket_prefix, release_prefix, item)
+            upload_helper(logger, bucket_name, keyname_version, data, acl)
+            logger.info("uploaded: {0} to {1}".format(item, keyname_version))

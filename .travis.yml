@@ -13,9 +13,8 @@ install:
   - pyb -v install_dependencies
 
 script:
-#  - pyb -v -X verify analyze
+  - pyb -v -X verify analyze
 
-  - PYTHONPATH=src/main/python/:src/unittest/python/ python -m unittest -v pybuilder_emr_plugin_tests
 after_success:
   - coveralls --verbose
 before_deploy:
