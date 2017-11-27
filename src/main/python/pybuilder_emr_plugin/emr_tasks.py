@@ -18,7 +18,7 @@ PROPERTY_S3_BUCKET_NAME = "emr.s3.bucket-name"
 PROPERTY_S3_BUCKET_PREFIX = "emr.s3.bucket-prefix"
 PROPERTY_S3_FILE_ACCESS_CONTROL = "emr.s3.file-access-control"
 PROPERTY_S3_RELEASE_PREFIX = "emr.s3.release-prefix"
-RELEASE_PREFIX_DEFAULT = "LATEST"
+RELEASE_PREFIX_DEFAULT = "latest"
 _EMR_PACKAGE_DIR = "emr-package"
 
 
