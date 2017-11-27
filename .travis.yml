@@ -14,8 +14,8 @@ after_success:
 - coveralls --verbose
 before_deploy:
 - pyb -v -X package
-- pip install twine --upgrade
-- twine --version
+#- pip install twine --upgrade
+#- twine --version
 
 deploy:
   - provider: pypi
