@@ -24,7 +24,7 @@ deploy:
     password:
       secure: nu/EwIxJgSp9rdC7c327wpy1WjLhtzmoNd3fw2YkzN580zK43gTFrQPOac67BWblh2ITJ3reHQ+y3u0mKl3/qPznnUkHel4ORY5mpUNl7IY9Nxu2TF+5Fc3KOxNY9uraJP0MwohpMF3AhZu/k4Lcq+bmDpUAZiGy7UTzwrDJH7WqUfEkLqZG4Yw7goQGonUSalOBdE7ZZCXCZoL0M8r7a6qEHBru2oWzoTi6faFS8KxzlFJ0L5Pfw1l5CFRmmQ8h26tzPxC+PNHY5v75knoOH2N1ifj6+JzY40M905Vj9hPcFS/aLo14V+NCFT/5p31k+kNICuNNPrtybdW/UoqIqC64vUjYnyKI3hfWOu2O26qCSX5c30wteUuuc7QAJZOvzgqxKVPaqNsTJFKMR29i8UMTCAWd/OSixGz9aLRKv36SDaFq1XTbeGZ9qhMPoLyle1+F8FsCVPwMJqRCZNg9MMwL0kGIsGncX+NbAHROmo/W0RSBdlS6aSfgPgcU5/uAOu67RinhWUcd/zatMWGnEJQ80dhK0RHuGLsQMEwHmkH7gXEg65ecw4pCW+2h8vQPuyz255CGnctiUlSAkLHSi9pG56ZUynmWlStlpTS22gYLw8xaZlE1DyPyc0vJHAs7IP8qjEffH6Tifczpxmsu2xkTUDnmph6vMnMq/wHMnAQ=
     on:
-      repo: obc/pybuilder_emr_plugin
+      repo: OberbaumConcept/pybuilder_emr_plugin
       python: "3.6"
       branch: master
       tags: true
@@ -37,7 +37,7 @@ deploy:
     password:
       secure: nu/EwIxJgSp9rdC7c327wpy1WjLhtzmoNd3fw2YkzN580zK43gTFrQPOac67BWblh2ITJ3reHQ+y3u0mKl3/qPznnUkHel4ORY5mpUNl7IY9Nxu2TF+5Fc3KOxNY9uraJP0MwohpMF3AhZu/k4Lcq+bmDpUAZiGy7UTzwrDJH7WqUfEkLqZG4Yw7goQGonUSalOBdE7ZZCXCZoL0M8r7a6qEHBru2oWzoTi6faFS8KxzlFJ0L5Pfw1l5CFRmmQ8h26tzPxC+PNHY5v75knoOH2N1ifj6+JzY40M905Vj9hPcFS/aLo14V+NCFT/5p31k+kNICuNNPrtybdW/UoqIqC64vUjYnyKI3hfWOu2O26qCSX5c30wteUuuc7QAJZOvzgqxKVPaqNsTJFKMR29i8UMTCAWd/OSixGz9aLRKv36SDaFq1XTbeGZ9qhMPoLyle1+F8FsCVPwMJqRCZNg9MMwL0kGIsGncX+NbAHROmo/W0RSBdlS6aSfgPgcU5/uAOu67RinhWUcd/zatMWGnEJQ80dhK0RHuGLsQMEwHmkH7gXEg65ecw4pCW+2h8vQPuyz255CGnctiUlSAkLHSi9pG56ZUynmWlStlpTS22gYLw8xaZlE1DyPyc0vJHAs7IP8qjEffH6Tifczpxmsu2xkTUDnmph6vMnMq/wHMnAQ=
     on:
-      repo: obc/pybuilder_emr_plugin
+      repo: OberbaumConcept/pybuilder_emr_plugin
       python: "3.6"
       branch: master
 
