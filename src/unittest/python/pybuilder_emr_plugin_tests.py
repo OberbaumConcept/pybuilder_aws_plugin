@@ -51,8 +51,8 @@ class PackageTest(TestCase):
         self.testdir = os.path.join(self.tempdir, "package_emr_test")
         self.project = Project(basedir=self.testdir, name="palp")
         self.source_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "package_emr_test/")
+        print("source_dir: {}".format(self.source_dir))
         shutil.copytree(self.source_dir, self.testdir)
-
         self.project.set_property("dir_target", "target")
         self.project.set_property("dir_source_main_python", "src/main/python")
         self.project.set_property("dir_source_main_scripts", "src/main/scripts")
@@ -66,6 +66,7 @@ class PackageTest(TestCase):
 
     @mock.patch("pybuilder_emr_plugin.emr_tasks.prepare_dependencies_dir")
     def test_emr_package_assembles_zipfile_correctly(self, prepare_dependencies_dir_mock):
+
         emr_package(self.project, mock.MagicMock(Logger))
         zf = zipfile.ZipFile(self.zipfile)
         expected = sorted(["test_dependency_module.py",
@@ -73,6 +74,8 @@ class PackageTest(TestCase):
                            "test_package_directory/__init__.py",
                            "test_package_directory/package_file.py",
                            "test_module_file.py",
+                           "resources.txt",
+                           "resources_subfolder/sub_resources.txt",
                            "VERSION"])
         self.assertEqual(sorted(zf.namelist()), expected, "zipfile")
         scripts_dir = self.project.expand_path("$dir_source_main_scripts")

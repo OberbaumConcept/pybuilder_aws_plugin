@@ -98,6 +98,10 @@ def emr_package(project, logger):
     excludes = ["spark-warehouse"]
     zip_recursive(archive, sources, excludes=excludes)
     write_version(project, archive)
+    resources = os.path.join(os.path.dirname(sources), "resources")
+    print("resources {}".format(resources))
+    if os.path.exists(resources) and os.path.isdir(resources):
+        zip_recursive(archive, resources)
     archive.close()
     logger.info("emr-package-zip is available at: {0}".format(path_to_zipfile))
     scripts = project.expand_path("$dir_source_main_scripts")

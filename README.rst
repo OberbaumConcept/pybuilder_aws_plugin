@@ -60,6 +60,11 @@ Add all own modules
 All modules which are found in ``src/main/python/`` are copied directly into
 the lambda-zip.
 
+Add all resources
+~~~~~~~~~~~~~~~~~~~~~~~
+All files which are found in ``src/main/resources/`` are copied directly into
+the lambda-zip.
+
 Copy all script files
 ~~~~~~~~~~~~~~~~~~~~~~~~
 The content of the scripts folder (``src/main/scripts``) in a PyBuilder project
