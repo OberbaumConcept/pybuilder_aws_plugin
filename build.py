@@ -17,7 +17,7 @@ summary = "PyBuilder plugin to handle Amazon EMR functionality"
 authors = [Author("Janne K. Olesen", "janne.olesen@oberbaum-concept.com"),
            ]
 license = "Apache"
-url = "https://github.com:OberbaumConcept/pybuilder_emr_plugin.git"
+url = "https://github.com/OberbaumConcept/pybuilder_emr_plugin.git"
 
 
 @init
