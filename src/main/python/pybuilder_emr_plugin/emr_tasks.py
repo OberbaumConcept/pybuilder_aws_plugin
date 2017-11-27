@@ -5,7 +5,7 @@ import ast
 import os
 import subprocess
 import zipfile
-from  distutils import dir_util
+from distutils import dir_util
 
 from pybuilder.core import depends, task
 from pybuilder.plugins.python.distutils_plugin import build_install_dependencies_string

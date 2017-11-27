@@ -22,14 +22,12 @@ def upload_helper(logger, bucket_name, keyname, data, acl):
 
 
 def copy_helper(logger, bucket_name, source_key, destination_key, acl):
-    'Copy S3 source_key to destination_key in bucket_name applying acl'
+    """Copy S3 source_key to destination_key in bucket_name applying acl"""
     logger.info('Copying in {0} from {1} to {2}'.format(bucket_name, source_key, destination_key))
     client = boto3.client("s3")
     client.copy_object(ACL=acl,
                        Bucket=bucket_name,
-                       CopySource={"Bucket": bucket_name,
-                                   "Key": source_key
-                                   },
+                       CopySource={"Bucket": bucket_name, "Key": source_key},
                        Key=destination_key,
                        MetadataDirective="COPY")
 
@@ -43,7 +41,8 @@ def teamcity_helper(tc_param, keyname):
     flush_text_line("##teamcity[setParameter name='{0}' value='{1}']".format(tc_param, keyname))
 
 
-# copied from https://github.com/JetBrains/teamcity-messages/blob/942584909b2ce51e62a7c3360c5e1d1af6e1ef5a/teamcity/messages.py#L13
+# copied from
+# https://github.com/JetBrains/teamcity-messages/blob/942584909b2ce51e62a7c3360c5e1d1af6e1ef5a/teamcity/messages.py#L13
 _quote = {"'": "|'", "|": "||", "\n": "|n", "\r": "|r", '[': '|[', ']': '|]'}
 
 
