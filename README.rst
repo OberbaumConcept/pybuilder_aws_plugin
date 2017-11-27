@@ -2,8 +2,8 @@
     :target: https://travis-ci.org/OberbaumConcept/pybuilder_emr_plugin
 .. image:: https://coveralls.io/repos/github/OberbaumConcept/pybuilder_emr_plugin/badge.svg?branch=master
     :target: https://coveralls.io/github/OberbaumConcept/pybuilder_emr_plugin?branch=master
-.. image:: https://badge.fury.io/py/pybuilder_emr_plugin.svg
-    :target: https://badge.fury.io/py/pybuilder_emr_plugin
+.. image:: https://badge.fury.io/py/pybuilder-emr-plugin.svg
+    :target: https://badge.fury.io/py/pybuilder-emr-plugin
 
 ====================
 pybuilder_emr_plugin
