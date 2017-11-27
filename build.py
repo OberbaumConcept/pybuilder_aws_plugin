@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #   -*- coding: utf-8 -*-
 from pybuilder.core import Author, init, use_plugin
+from pybuilder.vcs import VCSRevision
 
 use_plugin("python.core")
 use_plugin("python.unittest")
@@ -12,7 +13,9 @@ use_plugin("python.pycharm")
 
 name = "pybuilder_emr_plugin"
 default_task = "publish"
-version = "1.0.0"
+# we are simple using the numbers git commits as version number
+version = VCSRevision().count
+
 summary = "PyBuilder plugin to handle Amazon EMR functionality"
 authors = [Author("Janne K. Olesen", "janne.olesen@oberbaum-concept.com"),
            ]
