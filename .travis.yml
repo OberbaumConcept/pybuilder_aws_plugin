@@ -30,7 +30,7 @@ deploy:
       tags: true
 # test pypi
   - provider: pypi
-    server: https://testpypi.python.org/pypi
+    server: https://test.pypi.org/legacy/
     distributions: "sdist"
     skip_cleanup: true
     user: obc
