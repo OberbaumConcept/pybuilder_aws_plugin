@@ -129,6 +129,10 @@ class UploadToS3Test(TestsWithS3):
         self.project.set_property(emr_tasks.PROPERTY_S3_FILE_ACCESS_CONTROL, "no_such_value")
         self.assertRaises(BuildFailedException, emr_upload_to_s3, self.project, mock.MagicMock(Logger))
 
+    def test_upload_fails_with_invalid_sse_value(self):
+        self.project.set_property(emr_tasks.PROPERTY_S3_SERVER_SIDE_ENCRYPTION, "no_such_value")
+        self.assertRaises(BuildFailedException, emr_upload_to_s3, self.project, mock.MagicMock(Logger))
+
     @mock_s3
     def test_handle_failure_if_no_such_bucket(self):
         pass

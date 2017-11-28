@@ -10,22 +10,22 @@ from distutils import dir_util
 from pybuilder.core import depends, task
 from pybuilder.plugins.python.distutils_plugin import build_install_dependencies_string
 
-from .helpers import (upload_helper,
-                      check_acl_parameter_validity,
-                      )
+from .helpers import upload_helper, check_acl_parameter_validity, check_sse_parameter_validity
 
 PROPERTY_S3_BUCKET_NAME = "emr.s3.bucket-name"
 PROPERTY_S3_BUCKET_PREFIX = "emr.s3.bucket-prefix"
 PROPERTY_S3_FILE_ACCESS_CONTROL = "emr.s3.file-access-control"
 PROPERTY_S3_RELEASE_PREFIX = "emr.s3.release-prefix"
+PROPERTY_S3_SERVER_SIDE_ENCRYPTION = "emr.s3.server-side-encryption"
+PROPERTY_S3_SSE_KMS_KEY_ID = "emr.s3.sse-kms-keyid"
 RELEASE_PREFIX_DEFAULT = "latest"
 _EMR_PACKAGE_DIR = "emr-package"
 
 
-def zip_recursive(archive, directory, folder="", excludes=[]):
+def zip_recursive(archive, directory, folder="", excludes=None):
     """Zip directories recursively"""
     for item in os.listdir(directory):
-        if item in excludes:
+        if excludes and item in excludes:
             continue
         if os.path.isfile(os.path.join(directory, item)):
             archive.write(os.path.join(directory, item), os.path.join(folder, item), zipfile.ZIP_DEFLATED)
@@ -118,7 +118,9 @@ def emr_upload_to_s3(project, logger):
     bucket_name = project.get_mandatory_property(PROPERTY_S3_BUCKET_NAME)
     acl = project.get_property(PROPERTY_S3_FILE_ACCESS_CONTROL)
     check_acl_parameter_validity(PROPERTY_S3_FILE_ACCESS_CONTROL, acl)
-
+    server_side_encryption = project.get_property(PROPERTY_S3_SERVER_SIDE_ENCRYPTION)
+    check_sse_parameter_validity(PROPERTY_S3_SERVER_SIDE_ENCRYPTION, server_side_encryption)
+    sse_kms_keyid = project.get_property(PROPERTY_S3_SERVER_SIDE_ENCRYPTION)
     for item in os.listdir(get_emr_package_dir(project)):
         filepath = os.path.join(emr_package_dir, item)
         if os.path.isfile(filepath):
@@ -126,7 +128,7 @@ def emr_upload_to_s3(project, logger):
             with open(filepath, "rb") as fp:
                 data = fp.read()
             keyname_version = "{0}v{1}/{2}".format(bucket_prefix, project.version, item)
-            upload_helper(logger, bucket_name, keyname_version, data, acl)
+            upload_helper(logger, bucket_name, keyname_version, data, acl, server_side_encryption, sse_kms_keyid)
             logger.info("uploaded: {0} to {1}".format(item, keyname_version))
 
 
@@ -138,7 +140,9 @@ def emr_release(project, logger):
     release_prefix = project.get_property(PROPERTY_S3_RELEASE_PREFIX, RELEASE_PREFIX_DEFAULT)
     acl = project.get_property(PROPERTY_S3_FILE_ACCESS_CONTROL)
     check_acl_parameter_validity(PROPERTY_S3_FILE_ACCESS_CONTROL, acl)
-
+    server_side_encryption = project.get_property(PROPERTY_S3_SERVER_SIDE_ENCRYPTION)
+    check_sse_parameter_validity(PROPERTY_S3_SERVER_SIDE_ENCRYPTION, server_side_encryption)
+    sse_kms_keyid = project.get_property(PROPERTY_S3_SERVER_SIDE_ENCRYPTION)
     for item in os.listdir(get_emr_package_dir(project)):
         filepath = os.path.join(emr_package_dir, item)
         if os.path.isfile(filepath):
@@ -146,5 +150,5 @@ def emr_release(project, logger):
             with open(filepath, "rb") as fp:
                 data = fp.read()
             keyname_version = "{0}{1}/{2}".format(bucket_prefix, release_prefix, item)
-            upload_helper(logger, bucket_name, keyname_version, data, acl)
+            upload_helper(logger, bucket_name, keyname_version, data, acl, server_side_encryption, sse_kms_keyid)
             logger.info("uploaded: {0} to {1}".format(item, keyname_version))

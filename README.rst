@@ -14,11 +14,12 @@ following use cases are supported:
 
 * Packaging Python code for EMR_ and uploading the result to S3_.
 
-This project is based heavily on pybuilder_aws_plugin_ by Immobilienscout.
+This project is based heavily on pybuilder_aws_plugin_ by Immobilienscout. It uses Boto3_ for s3 uploads.
 
 .. _EMR: http://aws.amazon.com/documentation/emr/
 .. _S3: http://aws.amazon.com/documentation/s3/
 .. _pybuilder_aws_plugin: https://github.com/ImmobilienScout24/pybuilder_aws_plugin
+.. _Boto3: https://github.com/boto/boto3
 
 Usage
 =====================
@@ -104,6 +105,19 @@ Possible acl values are:
 * ``authenticated-read``
 * ``bucket-owner-read``
 * ``bucket-owner-full-control``
+
+For server side encryption use the properies
+
+.. code:: python
+
+    project.set_property('emr.s3.sse-kms-keyid', '<keyAlias>')
+    project.set_property('emr.s3.server-side-encryption', '<sse>')
+
+.. _sse:
+
+Possible sse values are:
+* ``aws:kms``
+* ``AES256``
 
 Furthermore, the plugin assumes that you already have a shell with enabled AWS
 access (exported keys or .boto or ...).

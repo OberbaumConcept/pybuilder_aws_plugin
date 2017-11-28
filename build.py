@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 #   -*- coding: utf-8 -*-
 from pybuilder.core import Author, init, use_plugin
-from pybuilder.vcs import VCSRevision
 
 use_plugin("python.core")
 use_plugin("python.unittest")
@@ -15,7 +14,7 @@ use_plugin("pypi:pybuilder_semver_git_tag", version="==1.1.0")
 name = "pybuilder_emr_plugin"
 default_task = "publish"
 # we are using semver_git_tag plugin, no version required
-#version = VCSRevision().count
+# version = VCSRevision().count
 
 summary = "PyBuilder plugin to handle Amazon EMR functionality"
 authors = [Author("Janne K. Olesen", "janne.olesen@oberbaum-concept.com"),
@@ -27,8 +26,8 @@ url = "https://github.com/OberbaumConcept/pybuilder_emr_plugin.git"
 @init
 def set_properties(project):
     project.set_property("install_dependencies_upgrade", True)
-    project.depends_on("boto3")
-    project.depends_on("httpretty")
+    project.depends_on("boto3==1.4.8")
+    project.depends_on("httpretty==0.8.14")
     project.build_depends_on("unittest2")
     project.build_depends_on("mock")
     project.build_depends_on("moto")
