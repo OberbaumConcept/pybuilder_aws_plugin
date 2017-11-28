@@ -10,6 +10,7 @@ use_plugin("python.flake8")
 use_plugin("python.coverage")
 use_plugin("python.distutils")
 use_plugin("python.pycharm")
+use_plugin("pypi:pybuilder_semver_git_tag", version="==1.1.0")
 
 name = "pybuilder_emr_plugin"
 default_task = "publish"
