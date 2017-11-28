@@ -14,8 +14,8 @@ use_plugin("pypi:pybuilder_semver_git_tag", version="==1.1.0")
 
 name = "pybuilder_emr_plugin"
 default_task = "publish"
-# we are simple using the numbers git commits as version number
-version = VCSRevision().count
+# we are using semver_git_tag plugin, no version required
+#version = VCSRevision().count
 
 summary = "PyBuilder plugin to handle Amazon EMR functionality"
 authors = [Author("Janne K. Olesen", "janne.olesen@oberbaum-concept.com"),
