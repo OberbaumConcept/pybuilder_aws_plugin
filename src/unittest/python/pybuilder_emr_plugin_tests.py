@@ -16,15 +16,9 @@ from pybuilder.core import Logger, Project
 from pybuilder.errors import BuildFailedException
 from unittest2 import TestCase
 
-from pybuilder_emr_plugin import (emr_package,
-                                  emr_upload_to_s3,
-                                  initialize_plugin,
-                                  emr_release,
-                                  emr_tasks)
+from pybuilder_emr_plugin import emr_package, emr_upload_to_s3, initialize_plugin, emr_release, emr_tasks
 from pybuilder_emr_plugin.emr_tasks import prepare_dependencies_dir
-from pybuilder_emr_plugin.helpers import (check_acl_parameter_validity,
-                                          permissible_acl_values,
-                                          )
+from pybuilder_emr_plugin.helpers import check_acl_parameter_validity, permissible_acl_values
 
 
 class TestCheckACLParameterValidity(TestCase):
@@ -49,16 +43,15 @@ class PackageTest(TestCase):
     def setUp(self):
         self.tempdir = tempfile.mkdtemp(prefix="palp-")
         self.testdir = os.path.join(self.tempdir, "package_emr_test")
-        self.project = Project(basedir=self.testdir, name="palp")
+        self.project = Project(basedir=self.testdir, name="palp", version="123")
         self.source_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "package_emr_test/")
-        print("source_dir: {}".format(self.source_dir))
         shutil.copytree(self.source_dir, self.testdir)
         self.project.set_property("dir_target", "target")
         self.project.set_property("dir_source_main_python", "src/main/python")
         self.project.set_property("dir_source_main_scripts", "src/main/scripts")
         self.project.set_property("run_unit_tests_propagate_stdout", True)
         self.project.set_property("run_unit_tests_propagate_stderr", True)
-        self.dir_target = os.path.join(self.testdir, "target", emr_tasks._EMR_PACKAGE_DIR)
+        self.dir_target = os.path.join(self.testdir, "target", emr_tasks._EMR_PACKAGE_DIR + "-" + self.project.version)
         self.zipfile = os.path.join(self.dir_target, "palp.zip")
 
     def tearDown(self):
@@ -66,7 +59,6 @@ class PackageTest(TestCase):
 
     @mock.patch("pybuilder_emr_plugin.emr_tasks.prepare_dependencies_dir")
     def test_emr_package_assembles_zipfile_correctly(self, prepare_dependencies_dir_mock):
-
         emr_package(self.project, mock.MagicMock(Logger))
         zf = zipfile.ZipFile(self.zipfile)
         expected = sorted(["test_dependency_module.py",
@@ -94,7 +86,7 @@ class TestsWithS3(TestCase):
         self.project.set_property(emr_tasks.PROPERTY_S3_BUCKET_NAME, self.bucket_name)
         self.project.set_property(emr_tasks.PROPERTY_S3_BUCKET_PREFIX, "")
         self.project.set_property(emr_tasks.PROPERTY_S3_RELEASE_PREFIX, "release")
-        self.dir_target = os.path.join(self.tempdir, "target", emr_tasks._EMR_PACKAGE_DIR)
+        self.dir_target = os.path.join(self.tempdir, "target", emr_tasks._EMR_PACKAGE_DIR + "-" + self.project.version)
         os.makedirs(self.dir_target)
         for file in ["palp.zip", "bash-script.sh", "python-script.py"]:
             self.filepath = os.path.join(self.dir_target, file)

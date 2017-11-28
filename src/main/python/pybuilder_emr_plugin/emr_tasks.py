@@ -61,7 +61,7 @@ def prepare_dependencies_dir(logger, project, target_directory, excludes=None):
 
 
 def get_emr_package_dir(project):
-    return os.path.join(project.expand_path("$dir_target"), _EMR_PACKAGE_DIR)
+    return os.path.join(project.expand_path("$dir_target"), _EMR_PACKAGE_DIR + "-" + project.version)
 
 
 def get_path_to_zipfile(project):
@@ -84,6 +84,7 @@ def write_version(project, archive):
          "package")
 def emr_package(project, logger):
     emr_package_dir = get_emr_package_dir(project)
+    os.makedirs(emr_package_dir, exist_ok=True)
     emr_dependencies_dir = os.path.join(emr_package_dir, "dependencies")
     excludes = ["boto", "boto3"]
     logger.info("Going to prepare dependencies.")
@@ -99,7 +100,6 @@ def emr_package(project, logger):
     zip_recursive(archive, sources, excludes=excludes)
     write_version(project, archive)
     resources = os.path.join(os.path.dirname(sources), "resources")
-    print("resources {}".format(resources))
     if os.path.exists(resources) and os.path.isdir(resources):
         zip_recursive(archive, resources)
     archive.close()
